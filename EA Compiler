@@ -1,0 +1,47 @@
+import hashlib
+
+class TradingRobotActivator:
+    def __init__(self, password):
+        self.password = password
+        self.registered_robots = {}
+
+    def register_robot(self, robot_id, robot_file_path):
+        #Hash the robot file path for security
+        robot_file_hash = hashlib.sha256(robot_file_path.encode()).hexdigest()
+        self.registered_robots[robot_id] = robot_file_hash
+
+    def verify_robot(self, robot_id, robot_file_path, password):
+        if password != self.password:
+            return False
+        
+        robot_file_hash = hashlib.sha256(robot_file_path.encode()).hexdigest()
+        if robot_id in self.registered_robots and self.registered_robots[robot_id] == robot_file_hash:
+            return True
+        return False
+
+    def get_registered_robots(self):
+        return self.registered_robots
+
+# Example usage
+activator = TradingRobotActivator(password="Mduli@2009")
+
+# Register a robot
+robot_file_path = "/path/to/robot1.ex4"
+robot_id = "robot1"
+activator.register_robot(robot_id, robot_file_path)
+
+# Verify a robot
+is_verified = activator.verify_robot(robot_id, robot_file_path, "Mduli@2009")
+print(f"Robot {robot_id} verification: {is_verified}")
+
+#Get all registered robots
+registered_robots = activator.get_registered_robots()
+print(f"Registered robots: {registered_robots}")
+
+# Mobile app implementation (Conceptual outline)
+# 1. User interface for robot ID and file upload
+# 2. Secure file upload mechanism (e.g., using HTTPS)
+# 3. Backend server to handle password verification and robot registration
+# 4. Use of a secure hashing algorithm (SHA256)
+# 5. API endpoints to support registration and verification functions
+# 6. Error handling and security measures to protect against unauthorized access
